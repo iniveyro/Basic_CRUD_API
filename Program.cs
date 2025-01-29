@@ -26,19 +26,21 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.MapGet("/ticketitems", async (TicketsDb db) =>
+var ticketitems = app.MapGroup("/ticketitems");
+
+ticketitems.MapGet("/", async (TicketsDb db) =>
     await db.Tickets.ToListAsync());
 
-app.MapGet("/ticketitems/status", async (TicketsDb db) =>
+ticketitems.MapGet("/status", async (TicketsDb db) =>
     await db.Tickets.Where(t => t.Status).ToListAsync());
 
-app.MapGet("/ticketitems/{id}", async (int id, TicketsDb db) =>
+ticketitems.MapGet("/{id}", async (int id, TicketsDb db) =>
     await db.Tickets.FindAsync(id)
         is Ticket ticket
             ? Results.Ok(ticket)
             : Results.NotFound());
 
-app.MapPost("/ticketitems", async (Ticket ticket, TicketsDb db) =>
+ticketitems.MapPost("/", async (Ticket ticket, TicketsDb db) =>
 {
     db.Tickets.Add(ticket);
     await db.SaveChangesAsync();
@@ -46,7 +48,7 @@ app.MapPost("/ticketitems", async (Ticket ticket, TicketsDb db) =>
     return Results.Created($"/ticketitems/{ticket.NumId}", ticket);
 });
 
-app.MapPut("/ticketitems/{id}", async (int id, Ticket inputTicket, TicketsDb db) =>
+ticketitems.MapPut("/{id}", async (int id, Ticket inputTicket, TicketsDb db) =>
 {
     var ticket = await db.Tickets.FindAsync(id);
 
@@ -60,7 +62,7 @@ app.MapPut("/ticketitems/{id}", async (int id, Ticket inputTicket, TicketsDb db)
     return Results.NoContent();
 });
 
-app.MapDelete("/ticketitems/{id}", async (int id, TicketsDb db) =>
+app.MapDelete("/{id}", async (int id, TicketsDb db) =>
 {
     if (await db.Tickets.FindAsync(id) is Ticket ticket)
     {

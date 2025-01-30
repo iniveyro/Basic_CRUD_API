@@ -9,11 +9,10 @@ public class Ticket
     public bool Status { get; set; }
     public required string Priority {get; set;}
     //Foreign Keys
-    [ForeignKey ("NumInv")]
-    public required PC NumInv {get; set;}
-    [ForeignKey ("Name")]
-    public required Area Name {get; set;}
-
+    //[ForeignKey ("PC")]
+    public required PC PC {get; set;}
+    //[ForeignKey ("Area")]
+    public required Area Area {get; set;}
 }
 
 public class PC
@@ -22,10 +21,12 @@ public class PC
     public int NumInv {get; set;}
     public int? NumSer {get; set;}
     public string? Description {get;set;}
+    public ICollection<Ticket>? Tickets { get; set; }
 }
 
 public class Area
 {
     [Key]
     public required string Name {get; set;}
+    public ICollection<Ticket>? Tickets { get; set; }
 }

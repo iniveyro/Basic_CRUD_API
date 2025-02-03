@@ -13,23 +13,23 @@ public static class PCEndpoints
         PCItems.MapPut("/{id}",UpdatePC);
 
     }
-    static async Task<IResult> GetAllPC(TicketsDb db)
+    static async Task<IResult> GetAllPC(Api.Models.TicketsDb db)
     {
         return TypedResults.Ok(await db.PCs.ToArrayAsync());    }
-    static async Task<IResult> GetPC(int id, TicketsDb db)
+    static async Task<IResult> GetPC(int id, Api.Models.TicketsDb db)
     {
         return await db.PCs.FindAsync(id)
-            is PC pc
+            is Api.Models.PC pc
             ? TypedResults.Ok(pc)
             : TypedResults.NotFound();
     }
-    static async Task<IResult> CreatePC(PC pc, TicketsDb db)
+    static async Task<IResult> CreatePC(Api.Models.PC pc, Api.Models.TicketsDb db)
     {
         db.PCs.Add(pc);
         await db.SaveChangesAsync();
         return TypedResults.Created($"/pcitems/{pc.NumInv}",pc);
     }
-    static async Task<IResult> UpdatePC(int id, PC inputPc, TicketsDb db)
+    static async Task<IResult> UpdatePC(int id, Api.Models.PC inputPc, Api.Models.TicketsDb db)
     {
         var pc = await db.PCs.FindAsync(id);
 
@@ -40,10 +40,10 @@ public static class PCEndpoints
             await db.SaveChangesAsync();
             return TypedResults.NoContent();
     }
-    static async Task<IResult> DeletePC(int id, TicketsDb db)
+    static async Task<IResult> DeletePC(int id, Api.Models.TicketsDb db)
     {
 
-    if (await db.PCs.FindAsync(id) is PC pc)
+    if (await db.PCs.FindAsync(id) is Api.Models.PC pc)
         {
         db.PCs.Remove(pc);
             await db.SaveChangesAsync();

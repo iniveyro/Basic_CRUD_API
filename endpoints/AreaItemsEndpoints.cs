@@ -13,24 +13,24 @@ public static class AreaEndpoints
         areaitems.MapPut("/{id}", UpdateArea);
         areaitems.MapDelete("/{id}", DeleteArea);
         
-        static async Task<IResult> GetAllAreas(TicketsDb db)
+        static async Task<IResult> GetAllAreas(Api.Models.TicketsDb db)
         {
             return TypedResults.Ok(await db.Areas.ToArrayAsync());
         }
-        static async Task<IResult> GetArea(int id, TicketsDb db)
+        static async Task<IResult> GetArea(int id, Api.Models.TicketsDb db)
         {
             return await db.Areas.FindAsync(id)
-                is Area area
+                is Api.Models.Area area
                 ? TypedResults.Ok(area)
                 : TypedResults.NotFound();
         }
-        static async Task<IResult> CreateArea(Area area,TicketsDb db)
+        static async Task<IResult> CreateArea(Api.Models.Area area,Api.Models.TicketsDb db)
         {
             db.Areas.Add(area);
             await db.SaveChangesAsync();
             return TypedResults.Created($"/areaitems/{area.Name}",area);
         }
-        static async Task<IResult> UpdateArea (string name,  Area inputArea, TicketsDb db)
+        static async Task<IResult> UpdateArea (string name,  Api.Models.Area inputArea, Api.Models.TicketsDb db)
         {
             var area = await db.Areas.FindAsync(name);
 
@@ -42,9 +42,9 @@ public static class AreaEndpoints
 
             return TypedResults.NoContent();
         }
-        static async Task<IResult> DeleteArea (string name, TicketsDb db)
+        static async Task<IResult> DeleteArea (string name, Api.Models.TicketsDb db)
         {
-            if (await db.Areas.FindAsync(name) is Area area)
+            if (await db.Areas.FindAsync(name) is Api.Models.Area area)
             {
                 db.Areas.Remove(area);
                 await db.SaveChangesAsync();

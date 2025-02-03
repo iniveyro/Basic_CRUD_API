@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
+namespace Api.Models;
 public class Ticket
 {
     [Key]
@@ -12,20 +13,4 @@ public class Ticket
     public required PC PC {get; set;}
     //[ForeignKey ("Area")]
     public required Area Area {get; set;}
-}
-
-public class PC
-{
-    [Key]
-    public int NumInv {get; set;}
-    public int? NumSer {get; set;}
-    public string? Description {get;set;}
-    public ICollection<Ticket>? Tickets { get; set; }
-}
-
-public class Area
-{
-    [Key]
-    public required string Name {get; set;}
-    public ICollection<Ticket>? Tickets { get; set; }
 }

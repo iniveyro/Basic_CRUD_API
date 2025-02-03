@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<TicketsDb>(opt => opt.UseInMemoryDatabase("TicketsList"));
+builder.Services.AddDbContext<Api.Models.TicketsDb>(opt => opt.UseInMemoryDatabase("TicketsList"));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApiDocument(config =>

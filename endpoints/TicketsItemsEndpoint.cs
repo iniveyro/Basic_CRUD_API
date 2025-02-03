@@ -4,7 +4,6 @@ public static class TicketEnpoint
 {
     public static void TicketItemsEnpoint(this WebApplication app)
     {
-    
         var ticketitems = app.MapGroup("/ticketitems");
 
         ticketitems.MapGet("/", GetAllTickets);
@@ -14,32 +13,32 @@ public static class TicketEnpoint
         ticketitems.MapPut("/{id}", UpdateTicket);
         ticketitems.MapDelete("/{id}", DeleteTicket);
         
-        static async Task<IResult> GetAllTickets(TicketsDb db)
+        static async Task<IResult> GetAllTickets(Api.Models.TicketsDb db)
         {
             return TypedResults.Ok(await db.Tickets.ToArrayAsync());
         }
 
-        static async Task<IResult> GetStatusTickets(TicketsDb db)
+        static async Task<IResult> GetStatusTickets(Api.Models.TicketsDb db)
         {
             return TypedResults.Ok(await db.Tickets.Where(t=>t.Status).ToListAsync());
         }
 
-        static async Task<IResult> GetTicket(int id, TicketsDb db)
+        static async Task<IResult> GetTicket(int id, Api.Models.TicketsDb db)
         {
             return await db.Tickets.FindAsync(id)
-                is Ticket ticket
+                is Api.Models.Ticket ticket
                 ? TypedResults.Ok(ticket)
                 : TypedResults.NotFound();
         }
 
-        static async Task<IResult> CreateTicket(Ticket ticket,TicketsDb db)
+        static async Task<IResult> CreateTicket(Api.Models.Ticket ticket,Api.Models.TicketsDb db)
         {
             db.Tickets.Add(ticket);
             await db.SaveChangesAsync();
             return TypedResults.Created($"/ticketitems/{ticket.NumId}",ticket);
         }
 
-        static async Task<IResult> UpdateTicket (int num,  Ticket inputTicket, TicketsDb db)
+        static async Task<IResult> UpdateTicket (int num,  Api.Models.Ticket inputTicket, Api.Models.TicketsDb db)
         {
             var ticket = await db.Tickets.FindAsync(num);
 
@@ -53,9 +52,9 @@ public static class TicketEnpoint
             return TypedResults.NoContent();
         }
 
-        static async Task<IResult> DeleteTicket (int num, TicketsDb db)
+        static async Task<IResult> DeleteTicket (int num, Api.Models.TicketsDb db)
         {
-            if (await db.Tickets.FindAsync(num) is Ticket ticket)
+            if (await db.Tickets.FindAsync(num) is Api.Models.Ticket ticket)
             {
                 db.Tickets.Remove(ticket);
                 await db.SaveChangesAsync();

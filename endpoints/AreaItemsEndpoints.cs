@@ -15,24 +15,24 @@ public static class AreaEndpoints
         
         static async Task<IResult> GetAllAreas(TicketsDb db)
         {
-            return TypedResults.Ok(await db.Area.ToArrayAsync());
+            return TypedResults.Ok(await db.Areas.ToArrayAsync());
         }
         static async Task<IResult> GetArea(int id, TicketsDb db)
         {
-            return await db.Area.FindAsync(id)
+            return await db.Areas.FindAsync(id)
                 is Area area
                 ? TypedResults.Ok(area)
                 : TypedResults.NotFound();
         }
         static async Task<IResult> CreateArea(Area area,TicketsDb db)
         {
-            db.Area.Add(area);
+            db.Areas.Add(area);
             await db.SaveChangesAsync();
             return TypedResults.Created($"/areaitems/{area.Name}",area);
         }
         static async Task<IResult> UpdateArea (string name,  Area inputArea, TicketsDb db)
         {
-            var area = await db.Area.FindAsync(name);
+            var area = await db.Areas.FindAsync(name);
 
             if (area is null) return TypedResults.NotFound();
 
@@ -44,9 +44,9 @@ public static class AreaEndpoints
         }
         static async Task<IResult> DeleteArea (string name, TicketsDb db)
         {
-            if (await db.Area.FindAsync(name) is Area area)
+            if (await db.Areas.FindAsync(name) is Area area)
             {
-                db.Area.Remove(area);
+                db.Areas.Remove(area);
                 await db.SaveChangesAsync();
                 return TypedResults.NoContent();
             }

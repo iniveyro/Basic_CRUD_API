@@ -1,2 +1,2 @@
 # Basic_CRUD
-API REST with ASP.NET
+Minimal HTTP APIs with minimal dependencies.

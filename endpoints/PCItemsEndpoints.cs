@@ -1,51 +1,51 @@
 using Microsoft.EntityFrameworkCore;
 
-public static class PCEndpoints
+public static class PcEndpoints
 {
-    public static void PCItemsEndpoint(this WebApplication app)
+    public static void PcItemsEndpoint(this WebApplication app)
     {
-        var PCItems = app.MapGroup("/pcitems");
+        var PcItems = app.MapGroup("/Pcitems");
 
-        PCItems.MapGet("/",GetAllPC);
-        PCItems.MapGet("/{id}",GetPC);
-        PCItems.MapPost("/",CreatePC);
-        PCItems.MapDelete("/{id}",DeletePC);
-        PCItems.MapPut("/{id}",UpdatePC);
+        PcItems.MapGet("/",GetAllPc);
+        PcItems.MapGet("/{id}",GetPc);
+        PcItems.MapPost("/",CreatePc);
+        PcItems.MapDelete("/{id}",DeletePc);
+        PcItems.MapPut("/{id}",UpdatePc);
 
     }
-    static async Task<IResult> GetAllPC(Api.Models.TicketsDb db)
+    static async Task<IResult> GetAllPc(Api.Models.TicketsDb db)
     {
-        return TypedResults.Ok(await db.PCs.ToArrayAsync());    }
-    static async Task<IResult> GetPC(int id, Api.Models.TicketsDb db)
+        return TypedResults.Ok(await db.Pcs.ToArrayAsync());    }
+    static async Task<IResult> GetPc(int id, Api.Models.TicketsDb db)
     {
-        return await db.PCs.FindAsync(id)
-            is Api.Models.PC pc
-            ? TypedResults.Ok(pc)
+        return await db.Pcs.FindAsync(id)
+            is Api.Models.Pc Pc
+            ? TypedResults.Ok(Pc)
             : TypedResults.NotFound();
     }
-    static async Task<IResult> CreatePC(Api.Models.PC pc, Api.Models.TicketsDb db)
+    static async Task<IResult> CreatePc(Api.Models.Pc Pc, Api.Models.TicketsDb db)
     {
-        db.PCs.Add(pc);
+        db.Pcs.Add(Pc);
         await db.SaveChangesAsync();
-        return TypedResults.Created($"/pcitems/{pc.NumInv}",pc);
+        return TypedResults.Created($"/Pcitems/{Pc.NumInv}",Pc);
     }
-    static async Task<IResult> UpdatePC(int id, Api.Models.PC inputPc, Api.Models.TicketsDb db)
+    static async Task<IResult> UpdatePc(int id, Api.Models.Pc inputPc, Api.Models.TicketsDb db)
     {
-        var pc = await db.PCs.FindAsync(id);
+        var Pc = await db.Pcs.FindAsync(id);
 
-            if (pc is null) return TypedResults.NotFound();
+            if (Pc is null) return TypedResults.NotFound();
 
-            pc.NumInv = inputPc.NumInv;
+            Pc.NumInv = inputPc.NumInv;
 
             await db.SaveChangesAsync();
             return TypedResults.NoContent();
     }
-    static async Task<IResult> DeletePC(int id, Api.Models.TicketsDb db)
+    static async Task<IResult> DeletePc(int id, Api.Models.TicketsDb db)
     {
 
-    if (await db.PCs.FindAsync(id) is Api.Models.PC pc)
+        if (await db.Pcs.FindAsync(id) is Api.Models.Pc Pc)
         {
-        db.PCs.Remove(pc);
+            db.Pcs.Remove(Pc);
             await db.SaveChangesAsync();
             return TypedResults.NoContent();
         }

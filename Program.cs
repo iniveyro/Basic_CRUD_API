@@ -26,6 +26,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.TicketItemsEnpoint();
-app.PCItemsEndpoint();
+app.PcItemsEndpoint();
 app.AreaItemsEnpoint();
 app.Run();

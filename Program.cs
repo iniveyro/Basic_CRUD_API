@@ -1,7 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<Api.Models.TicketsDb>(opt => opt.UseInMemoryDatabase("TicketsList"));
+//builder.Services.AddDbContext<Api.Models.TicketsDb>(opt => opt.UseInMemoryDatabase("TicketsList"));
+builder.Services.AddDbContext<Api.Models.TicketsDb>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApiDocument(config =>

@@ -10,9 +10,6 @@ public class Ticket
     public string? Description { get; set; }
     public bool Status { get; set; }
     public required string Priority {get; set;}
-    //Foreign Keys
-    //[ForeignKey ("PC")]
     public required Pc Pc {get; set;}
-    //[ForeignKey ("Area")]
     public required Area Area {get; set;}
 }

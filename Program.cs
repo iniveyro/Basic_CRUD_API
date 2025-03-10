@@ -29,7 +29,7 @@ if (app.Environment.IsDevelopment())
         config.DocExpansion = "list";
     });
 }
-
+//agregar etiquetas sin que el proyecto sea mvc
 app.TicketItemsEnpoint();
 app.PcItemsEndpoint();
 app.AreaItemsEnpoint();

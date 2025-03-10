@@ -1,3 +1,4 @@
+using Api.Models;
 using Microsoft.EntityFrameworkCore;
 
 public static class TicketEnpoint
@@ -15,6 +16,7 @@ public static class TicketEnpoint
         
         static async Task<IResult> GetAllTickets(Api.Models.TicketsDb db)
         {
+            await db.SaveChangesAsync();
             return TypedResults.Ok(await db.Tickets.ToArrayAsync());
         }
 
@@ -31,52 +33,59 @@ public static class TicketEnpoint
                 : TypedResults.NotFound();
         }
 
-        static async Task<IResult> CreateTicket(Api.Models.Ticket ticket, Api.Models.TicketsDb db)
+        static async Task<IResult> CreateTicket(bool Status, string Description, PriorityLevel Priority, string Area, int PC, Api.Models.Ticket ticket, Api.Models.TicketsDb db)
         {
             // Busca el área existente por nombre
-            var areaExistente = await db.Areas.FindAsync(ticket.Area.Name);
+            var areaExistente = await db.Areas.FindAsync(ticket.Area);
 
             if (areaExistente != null)
             {
                 // Si existe, asigna los valores del área existente al ticket
-                ticket.Area = areaExistente;
+                ticket.Area = areaExistente.Name;
             }
             else
             {
                 // Si no existe, crea un nuevo área
-                var nuevaArea = new Api.Models.Area { Name = ticket.Area.Name, Location = ticket.Area.Location };
+                var nuevaArea = new Api.Models.Area { Name = Area};
                 db.Areas.Add(nuevaArea);
+                ticket.Area = nuevaArea.Name;
                 await db.SaveChangesAsync();
-                ticket.Area = nuevaArea;
             }
 
             // Repite el proceso para PC
-            var pcExistente = await db.Pcs.FindAsync(ticket.Pc.NumInv);
+            var pcExistente = await db.Pcs.FindAsync(ticket.Pc);
 
             if (pcExistente != null)
             {
                 // Si existe, asigna los valores del área existente al ticket
-                ticket.Pc = pcExistente;
+                ticket.Pc = pcExistente.NumInv;
             }
             else
             {
                 // Si no existe, crea un nuevo pc
-                var nuevoPc = new Api.Models.Pc { NumInv = ticket.Pc.NumInv, NumSer = ticket.Pc.NumSer, Description = ticket.Pc.Description};
+                var nuevoPc = new Api.Models.Pc { NumInv = PC};
                 db.Pcs.Add(nuevoPc);
+                ticket.Pc = nuevoPc.NumInv;
                 await db.SaveChangesAsync();
-                ticket.Pc = nuevoPc;
             }
             
             // Agrega el nuevo ticket
+            
+            ticket.Status = Status;
+            ticket.Description = Description;
+            ticket.Priority = Priority;
+            ticket.Area = Area;
+            ticket.Pc = PC;
+            
             db.Tickets.Add(ticket);
             await db.SaveChangesAsync();
 
             return TypedResults.Created($"/ticketitems/{ticket.NumId}",ticket);
         }
         
-        static async Task<IResult> UpdateTicket (int num,  Api.Models.Ticket inputTicket, Api.Models.TicketsDb db)
+        static async Task<IResult> UpdateTicket (int id,  Api.Models.Ticket inputTicket, Api.Models.TicketsDb db)
         {
-            var ticket = await db.Tickets.FindAsync(num);
+            var ticket = await db.Tickets.FindAsync(id);
 
             if (ticket is null) return TypedResults.NotFound();
 
@@ -88,16 +97,27 @@ public static class TicketEnpoint
             return TypedResults.NoContent();
         }
 
-        static async Task<IResult> DeleteTicket (int num, Api.Models.TicketsDb db)
+        static async Task<IResult> DeleteTicket (int id, Api.Models.TicketsDb db)
         {
-            if (await db.Tickets.FindAsync(num) is Api.Models.Ticket ticket)
+            if (id <= 0)
             {
-                db.Tickets.Remove(ticket);
-                await db.SaveChangesAsync();
-                return TypedResults.NoContent();
+                return TypedResults.BadRequest("El número de ticket debe ser un valor positivo.");
             }
-
-            return TypedResults.NotFound();
+            try
+            {
+                if (await db.Tickets.FindAsync(id) is Api.Models.Ticket ticket)
+                {
+                    db.Tickets.Remove(ticket);
+                    await db.SaveChangesAsync();
+                    return TypedResults.NoContent();
+                }
+                return TypedResults.NotFound();
+            }
+            catch (Exception)
+            {
+                // Log the exception (ex) here
+                return TypedResults.Problem("Ocurrió un error al procesar la solicitud.");
+            }
         }
     }
 } 

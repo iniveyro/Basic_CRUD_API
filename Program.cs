@@ -18,8 +18,8 @@ builder.Services.AddOpenApiDocument(config =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseOpenApi();
     app.UseSwaggerUi(config =>
     {
@@ -28,7 +28,7 @@ if (app.Environment.IsDevelopment())
         config.DocumentPath = "/swagger/{documentName}/swagger.json";
         config.DocExpansion = "list";
     });
-}
+//}
 //agregar etiquetas sin que el proyecto sea mvc
 app.TicketItemsEnpoint();
 app.PcItemsEndpoint();

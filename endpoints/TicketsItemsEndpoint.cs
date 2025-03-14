@@ -33,7 +33,7 @@ public static class TicketEnpoint
                 : TypedResults.NotFound();
         }
 
-        static async Task<IResult> CreateTicket(bool Status, string Description, PriorityLevel Priority, string Area, int PC, Api.Models.Ticket ticket, Api.Models.TicketsDb db)
+        static async Task<IResult> CreateTicket(bool Status, string Description, int Priority, string Area, int PC, Api.Models.Ticket ticket, Api.Models.TicketsDb db)
         {
             // Busca el área existente por nombre
             var areaExistente = await db.Areas.FindAsync(ticket.Area);
